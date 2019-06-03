@@ -2,6 +2,7 @@
 using GPMDP_Api;
 using GPMDP_Api.Enums;
 using GPMDP_Api.Models;
+using GPMDP_Api.Playback;
 using System;
 
 namespace BarRaider.GPMDP.Communication
@@ -84,6 +85,14 @@ namespace BarRaider.GPMDP.Communication
             get
             {
                 return client.IsConnected;
+            }
+        }
+
+        public bool IsPlaying
+        {
+            get
+            {
+                return IsConnected && client.IsPlaying();
             }
         }
 

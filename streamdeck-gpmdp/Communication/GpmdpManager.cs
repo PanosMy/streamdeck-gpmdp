@@ -27,6 +27,14 @@ namespace BarRaider.GPMDP.Communication
             }
         }
 
+        public bool IsPlaying
+        {
+            get
+            {
+                return GpmdpClient.Instance.IsPlaying;
+            }
+        }
+
 
         public GpmdpManager()
         {

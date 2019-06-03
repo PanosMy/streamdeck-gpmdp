@@ -5,7 +5,11 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -57,7 +61,12 @@ namespace BarRaider.GPMDP.Actions
 
         private bool isPlaying = false;
         private Track track;
-        private int playtime;
+        private int progress;
+        private string lastAlbumArtUrl = string.Empty;
+        private Bitmap albumImage = null;
+        private Image imgPlayPause = Tools.Base64StringToImage(Properties.Settings.Default.ImgPlayPause);
+        private string trackTitle = null;
+        private StringBuilder trackTitleShifted = null;
 
         #endregion
 
@@ -98,8 +107,8 @@ namespace BarRaider.GPMDP.Actions
             if (!baseHandledKeypress)
             {
                 if (!payload.IsInMultiAction ||
-                    (payload.IsInMultiAction && payload.UserDesiredState == 1 && isPlaying) || // Multiaction mode, check if desired state is 1 (0==play, 1==pause)
-                    (payload.IsInMultiAction && payload.UserDesiredState == 0 && !isPlaying))
+                    (payload.IsInMultiAction && payload.UserDesiredState == 1 && gpmdpManager.IsPlaying) || // Multiaction mode, check if desired state is 1 (0==play, 1==pause)
+                    (payload.IsInMultiAction && payload.UserDesiredState == 0 && !gpmdpManager.IsPlaying))
                 {
                     gpmdpManager.PlayPause();
                 }
@@ -111,14 +120,14 @@ namespace BarRaider.GPMDP.Actions
             Tools.AutoPopulateSettings(Settings, payload.Settings);
         }
 
-        public async override void OnTick()
+        public override void OnTick()
         {
             baseHandledOnTick = false;
             base.OnTick();
 
             if (!baseHandledOnTick)
             {
-                await Connection.SetImageAsync((String)null);
+                DrawPlayPauseKey();
             }
         }
 
@@ -134,19 +143,110 @@ namespace BarRaider.GPMDP.Actions
 
         #region Private Methods
 
-        private void Client_TrackResultReceived(object sender, GPMDP_Api.Models.Track e)
+        private async void Client_TrackResultReceived(object sender, GPMDP_Api.Models.Track e)
         {
             track = e;
+            if (track != null)
+            {
+                if (!String.IsNullOrEmpty(track.albumArt) && track.albumArt != lastAlbumArtUrl)
+                {
+                    lastAlbumArtUrl = track.albumArt;
+                    albumImage = await FetchImage(track.albumArt).ConfigureAwait(false);
+                }
+                if (track.title != trackTitle)
+                {
+                    trackTitle = track.title;
+                    trackTitleShifted = new StringBuilder($"{trackTitle} - {track.artist}  ");
+                }
+            }
+
         }
 
         private void Client_TimeReceived(object sender, GPMDP_Api.Models.TimeValues e)
         {
-            playtime = e.Current;
+            progress = e.Current;
         }
 
         private void Client_PlayStateReceived(object sender, bool e)
         {
             isPlaying = e;
+        }
+
+        private void DrawPlayPauseKey()
+        {
+            Graphics graphics;
+            Bitmap bmp = Tools.GenerateKeyImage(out graphics);
+            GraphicsPath gpath;
+            var fontSong = new Font("Verdana", 11, FontStyle.Bold);
+            var fontElapsed = new Font("Verdana", 11, FontStyle.Bold);
+
+            // Draw back cover
+            if (Settings.ShowSongImage && track != null && albumImage != null)
+            {
+                graphics.DrawImage(albumImage, 0, 0, Tools.KEY_DEFAULT_WIDTH, Tools.KEY_DEFAULT_HEIGHT);
+            }
+            /*
+            else if (keyBase64ImageStr != null)
+            {
+                if (imgKeyImage == null)
+                {
+                    imgKeyImage = Tools.Base64StringToImage(keyBase64ImageStr);
+                }
+                graphics.DrawImage(imgKeyImage, 0, 0, Tools.KEY_DEFAULT_WIDTH, Tools.KEY_DEFAULT_HEIGHT);
+            }*/
+            else // Default image
+            {
+                graphics.DrawImage(imgPlayPause, 0, 0, Tools.KEY_DEFAULT_WIDTH, Tools.KEY_DEFAULT_HEIGHT);
+            }
+
+            if (Settings.ShowTimeElapsed)
+            {
+                // Draw Elapsed
+                TimeSpan t = TimeSpan.FromMilliseconds(progress);
+
+                string timeElapsed = string.Format("{0:D2}:{1:D2}",
+                                        (int)t.TotalMinutes,
+                                        t.Seconds);
+                gpath = new GraphicsPath();
+                gpath.AddString(timeElapsed,
+                                    fontElapsed.FontFamily,
+                                    (int)FontStyle.Bold,
+                                    graphics.DpiY * fontElapsed.SizeInPoints / 72,
+                                    new Point(9, 54),
+                                    new StringFormat());
+                graphics.DrawPath(Pens.Black, gpath);
+                graphics.FillPath(Brushes.White, gpath);
+            }
+
+            // Draw song name
+            if (Settings.ShowSongName && trackTitleShifted != null && trackTitleShifted.Length > 3)
+            {
+                string songName = trackTitleShifted.ToString();
+                string cutString = trackTitleShifted.ToString().Substring(0, 2);
+                trackTitleShifted = trackTitleShifted.Remove(0, 2).Append(cutString);
+                gpath = new GraphicsPath();
+                gpath.AddString(songName,
+                                fontSong.FontFamily,
+                                (int)FontStyle.Bold,
+                                graphics.DpiY * fontSong.SizeInPoints / 72,
+                                new Point(3, 1),
+                                new StringFormat());
+                graphics.DrawPath(Pens.Black, gpath);
+                graphics.FillPath(Brushes.White, gpath);
+            }
+            Connection.SetImageAsync(bmp);
+        }
+
+        private async Task<Bitmap> FetchImage(string imageUrl)
+        {
+            if (String.IsNullOrEmpty(imageUrl))
+            {
+                return null;
+            }
+
+            WebClient client = new WebClient();
+            Stream stream = await client.OpenReadTaskAsync(new Uri(imageUrl));
+            return new Bitmap(stream);
         }
 
 
