@@ -1,0 +1,32 @@
+{
+  "Localization": {
+    "Setup": {
+      "Intro": {
+        "Title" : "Initial Setup",
+        "Description": "This wizard will help you link Google Play Music Desktop Player (GPMDP) with the plugin.<br/><B>IMPORTANT:</B> Make sure GPMDP is up and running and both the \"Enable Playback API\" and \"Enable JSON API\" options are enabled in the \"Desktop Settings\".",
+        "Start": "Link Account",
+        "Close": "Not Now"
+      },
+      "Pairing": {
+        "Title": "Link Account",
+        "Description": "A popup should have been raised in GPMDP with a 4-digit code. Type the Approval Code to the textbox below:",
+        "ApprovalCodeTitle": "Approval Code",
+        "ApprovalPlaceholder": "Paste 4-digit code",
+        "Submit": "Submit Code",
+        "Close": "Cancel"
+      },
+      "Result": {
+        "ValidateTitle": "Validating Code",
+        "ValidateDescription": "This should take up to 5 seconds...",
+        "SuccessTitle": "Code Accepted",
+        "SuccessDescription": "You may now close this window and start using the plugin",
+        "FailTitle": "VALIDATION FAILED",
+        "FailDescription": "We failed to validate the code. Please try again with a new code. Make sure to copy-paste the code entirely",
+        "FailRetry": "Try Again",
+        "Close": "Close",
+        "Cancel": "Cancel",
+        "Save": "Done"
+      }
+    }
+  }
+}

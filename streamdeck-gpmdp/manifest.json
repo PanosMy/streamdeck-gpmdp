@@ -1,0 +1,135 @@
+{
+  "Actions": [
+    {
+      "Icon": "Images/toggle_play_on_white",
+      "Name": "Play/Pause",
+      "States": [
+        {
+          "Image": "Images/btn_play_pause",
+          "MultiActionImage": "Images/btn_play",
+          "TitleAlignment": "bottom",
+          "FontSize": "14",
+          "Name": "Play"
+        },
+        {
+          "Image": "Images/btn_pause",
+          "Name": "Pause",
+          "OnlyForMultiAction": true
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Play/Pause",
+      "UUID": "com.barraider.gpmdp.playpause",
+      "PropertyInspectorPath": "PropertyInspector/GPMDP/Play.html"
+    },
+    {
+      "Icon": "Images/prev",
+      "Name": "Previous Song",
+      "States": [
+        {
+          "Image": "Images/btn_prev",
+          "TitleAlignment": "bottom",
+          "FontSize": "14"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Previous Song",
+      "UUID": "com.barraider.gpmdp.prev",
+      "PropertyInspectorPath": "PropertyInspector/GPMDP/GPMDP.html"
+    },
+    {
+      "Icon": "Images/next",
+      "Name": "Next Song",
+      "States": [
+        {
+          "Image": "Images/btn_next",
+          "TitleAlignment": "bottom",
+          "FontSize": "14"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Next Song",
+      "UUID": "com.barraider.gpmdp.next",
+      "PropertyInspectorPath": "PropertyInspector/GPMDP/GPMDP.html"
+    },
+    {
+      "Icon": "Images/volume_up",
+      "Name": "Volume Up",
+      "States": [
+        {
+          "Image": "Images/btn_volume_up",
+          "TitleAlignment": "bottom",
+          "FontSize": "14"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Volume Up",
+      "UUID": "com.barraider.gpmdp.volup",
+      "PropertyInspectorPath": "PropertyInspector/GPMDP/Volume.html"
+    },
+    {
+      "Icon": "Images/volume_down",
+      "Name": "Volume Down",
+      "States": [
+        {
+          "Image": "Images/btn_volume_down",
+          "TitleAlignment": "bottom",
+          "FontSize": "14"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Volume Down",
+      "UUID": "com.barraider.gpmdp.voldown",
+      "PropertyInspectorPath": "PropertyInspector/GPMDP/Volume.html"
+    },
+    {
+      "Icon": "Images/volume_mute",
+      "Name": "Volume Mute/Unmute",
+      "States": [
+        {
+          "Image": "Images/btn_volume_mute",
+          "TitleAlignment": "bottom",
+          "FontSize": "14"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Volume Mute/Unmute",
+      "UUID": "com.barraider.gpmdp.voltoggle",
+      "PropertyInspectorPath": "PropertyInspector/GPMDP/Mute.html"
+    },
+    {
+      "Icon": "Images/volume_set",
+      "Name": "Volume Set",
+      "States": [
+        {
+          "Image": "Images/btn_volume_set",
+          "TitleAlignment": "bottom",
+          "FontSize": "14"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Volume Set",
+      "UUID": "com.barraider.gpmdp.volset",
+      "PropertyInspectorPath": "PropertyInspector/GPMDP/Volume.html"
+    }
+  ],
+  "Author": "BarRaider",
+  "Description": "Control Google Play Music Desktop Player (GPMDP) from your Stream Deck.",
+  "Name": "Google Play Music Desktop",
+  "Icon": "Images/pluginIcon",
+  "URL": "https://barraider.github.io/",
+  "Version": "0.5",
+  "CodePath": "com.barraider.gpmdp",
+  "Category": "GPMDP [BarRaider]",
+  "CategoryIcon": "Images/categoryIcon",
+  "OS": [
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "SDKVersion": 2,
+  "Software": {
+    "MinimumVersion": "4.3"
+  }
+}
