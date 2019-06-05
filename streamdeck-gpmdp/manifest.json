@@ -53,6 +53,36 @@
       "PropertyInspectorPath": "PropertyInspector/GPMDP/GPMDP.html"
     },
     {
+      "Icon": "Images/toggle_shuffle_on_white",
+      "Name": "Shuffle Mode",
+      "States": [
+        {
+          "Image": "Images/btn_shuffle",
+          "TitleAlignment": "bottom",
+          "FontSize": "14"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Shuffle Mode",
+      "UUID": "com.barraider.gpmdp.shuffle",
+      "PropertyInspectorPath": "PropertyInspector/GPMDP/GPMDP.html"
+    },
+    {
+      "Icon": "Images/repeat",
+      "Name": "Repeat Mode",
+      "States": [
+        {
+          "Image": "Images/btn_repeat",
+          "TitleAlignment": "bottom",
+          "FontSize": "14"
+        }
+      ],
+      "SupportedInMultiActions": true,
+      "Tooltip": "Repeat Mode",
+      "UUID": "com.barraider.gpmdp.repeat",
+      "PropertyInspectorPath": "PropertyInspector/GPMDP/GPMDP.html"
+    },
+    {
       "Icon": "Images/volume_up",
       "Name": "Volume Up",
       "States": [
@@ -118,7 +148,7 @@
   "Name": "Google Play Music Desktop",
   "Icon": "Images/pluginIcon",
   "URL": "https://barraider.github.io/",
-  "Version": "0.5",
+  "Version": "0.7",
   "CodePath": "com.barraider.gpmdp",
   "Category": "GPMDP [BarRaider]",
   "CategoryIcon": "Images/categoryIcon",

@@ -2,6 +2,7 @@
 using System;
 using GPMDP_Api.Playback;
 using GPMDP_Api.Volume;
+using GPMDP_Api.Enums;
 
 namespace BarRaider.GPMDP.Communication
 {
@@ -73,6 +74,42 @@ namespace BarRaider.GPMDP.Communication
         public void PreviousSong()
         {
             GpmdpClient.Instance.GetClient().Previous();
+        }
+
+        public ShuffleType GetShuffle()
+        {
+            try
+            {
+                return GpmdpClient.Instance.GetClient().GetShuffle();
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogMessage(TracingLevel.WARN, $"GetShuffle failed: {ex}");
+                return ShuffleType.Unknown;
+            }
+        }
+
+        public void ShuffleToggle()
+        {
+            GpmdpClient.Instance.GetClient().ToggleShuffle();
+        }
+
+        public RepeatType GetRepeat()
+        {
+            try
+            {
+                return GpmdpClient.Instance.GetClient().GetRepeat();
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.LogMessage(TracingLevel.WARN, $"GetRepeat failed: {ex}");
+                return RepeatType.Unknown;
+            }
+        }
+
+        public void RepeatToggle()
+        {
+            GpmdpClient.Instance.GetClient().ToggleRepeat();
         }
 
         public void GetVolume()
