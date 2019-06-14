@@ -144,11 +144,11 @@
     }
   ],
   "Author": "BarRaider",
-  "Description": "Control Google Play Music Desktop Player (GPMDP) from your Stream Deck.",
+  "Description": "Google Play Music Desktop Player (GPMDP) integration and live feedback. Control GPMDP and get live feedback all on your Stream Deck.",
   "Name": "Google Play Music Desktop",
   "Icon": "Images/pluginIcon",
   "URL": "https://barraider.github.io/",
-  "Version": "0.7",
+  "Version": "1.0",
   "CodePath": "com.barraider.gpmdp",
   "Category": "GPMDP [BarRaider]",
   "CategoryIcon": "Images/categoryIcon",
