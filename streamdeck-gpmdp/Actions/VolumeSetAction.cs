@@ -33,6 +33,16 @@ namespace BarRaider.GPMDP.Actions
             if (!baseHandledOnTick)
             {
                 await Connection.SetImageAsync((String)null);
+
+                if (Settings.ShowVolumeLevel)
+                {
+                    await Connection.SetTitleAsync(currentVolume.ToString());
+                }
+                else
+                {
+                    await Connection.SetTitleAsync(null);
+
+                }
             }
         }
     }

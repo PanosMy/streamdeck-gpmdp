@@ -15,11 +15,15 @@ namespace BarRaider.GPMDP.Actions
                 PluginSettings instance = new PluginSettings();
                 instance.VolumeParam = "10";
                 instance.TokenExists = false;
+                instance.ShowVolumeLevel = true;
                 return instance;
             }
 
             [JsonProperty(PropertyName = "volumeParam")]
             public string VolumeParam { get; set; }
+
+            [JsonProperty(PropertyName = "showVolumeLevel")]
+            public bool ShowVolumeLevel { get; set; }
         }
 
         protected PluginSettings Settings

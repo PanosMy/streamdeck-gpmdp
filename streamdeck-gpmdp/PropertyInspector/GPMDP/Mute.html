@@ -15,7 +15,14 @@
         <details class="message info">
             <summary>For feedback/suggestions contact me at <span class="linkspan" onclick="openWebsite()">https://BarRaider.github.io</span> </summary>
         </details>
-        <div id="sdWrapper" style="display:none;">
+        <div id="sdWrapper" style="">
+            <div type="checkbox" class="sdpi-item" id="dvShowVolumeLevel">
+                <div class="sdpi-item-label">Volume Level</div>
+                <div class="sdpi-item-value">
+                    <input id="showVolumeLevel" class="sdProperty sdCheckbox" type="checkbox" value="" oninput="setSettings()">
+                    <label for="showVolumeLevel" class="sdpi-item-label"><span></span>Display on key</label>
+                </div>
+            </div>
             <hr />
             <div class="sdpi-item" id="dvReset">
                 <div class="sdpi-item-label">Revoke Approval</div>

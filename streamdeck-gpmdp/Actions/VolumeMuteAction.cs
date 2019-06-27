@@ -49,6 +49,15 @@ namespace BarRaider.GPMDP.Actions
                 {
                     await Connection.SetImageAsync(Properties.Settings.Default.ImgVolumeMute);
                 }
+
+                if (Settings.ShowVolumeLevel)
+                {
+                    await Connection.SetTitleAsync(currentVolume.ToString());
+                }
+                else
+                {
+                    await Connection.SetTitleAsync(null);
+                }
             }
         }
     }
