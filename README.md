@@ -10,7 +10,8 @@ Integration and live feedback with the Google Play Media Desktop Player (GPMDP).
 
 ## Actions supported:
 - Custom images that toggle for shuffle * Play/Pause (includes support to show current playing time, Album Art and Song Title)
-- Custom images that toggle for repeat buttons* Previous
+- Custom images that toggle for repeat buttons
+* Previous
 * Next
 * Volume Up/Volume Down/Volume Set
 * Mute/Unmute Toggle
