@@ -37,6 +37,22 @@
                     <label for="showSongImage" class="sdpi-item-label"><span></span>Display on key</label>
                 </div>
             </div>
+            <div class="sdpi-item" id="dvPlayImage">
+                <div class="sdpi-item-label">Play image</div>
+                <div class="sdpi-item-group file" id="filepickergroup">
+                    <input class="sdpi-item-value sdProperty sdFile" type="file" id="playImage" accept=".jpg, .jpeg, .png, .ico, .gif, .bmp, .tiff" oninput="setSettings()">
+                    <label class="sdpi-file-info " for="playImage" id="playImageFilename">No file...</label>
+                    <label class="sdpi-file-label" for="playImage">Choose file...</label>
+                </div>
+            </div>
+            <div class="sdpi-item" id="dvPauseImage">
+                <div class="sdpi-item-label">Pause image</div>
+                <div class="sdpi-item-group file" id="filepickergroup">
+                    <input class="sdpi-item-value sdProperty sdFile" type="file" id="pauseImage" accept=".jpg, .jpeg, .png, .ico, .gif, .bmp, .tiff" oninput="setSettings()">
+                    <label class="sdpi-file-info " for="pauseImage" id="pauseImageFilename">No file...</label>
+                    <label class="sdpi-file-label" for="pauseImage">Choose file...</label>
+                </div>
+            </div>
             <hr />
             <div class="sdpi-item" id="dvReset">
                 <div class="sdpi-item-label">Revoke Approval</div>

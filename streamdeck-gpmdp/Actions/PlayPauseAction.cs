@@ -15,6 +15,12 @@ using System.Threading.Tasks;
 
 namespace BarRaider.GPMDP.Actions
 {
+
+    //---------------------------------------------------
+    //          BarRaider's Hall Of Fame
+    // 100 Bits: lostlocalhost
+    //---------------------------------------------------
+
     [PluginActionId("com.barraider.gpmdp.playpause")]
     public class PlayPauseAction : ActionBase
     {
@@ -22,11 +28,15 @@ namespace BarRaider.GPMDP.Actions
         {
             public static PluginSettings CreateDefaultSettings()
             {
-                PluginSettings instance = new PluginSettings();
-                instance.TokenExists = false;
-                instance.ShowTimeElapsed = true;
-                instance.ShowSongName = true;
-                instance.ShowSongImage = true;
+                PluginSettings instance = new PluginSettings
+                {
+                    TokenExists = false,
+                    ShowTimeElapsed = true,
+                    ShowSongName = true,
+                    ShowSongImage = true,
+                    PlayImage = String.Empty,
+                    PauseImage = String.Empty
+                };
                 return instance;
             }
 
@@ -38,6 +48,14 @@ namespace BarRaider.GPMDP.Actions
 
             [JsonProperty(PropertyName = "showSongImage")]
             public bool ShowSongImage { get; set; }
+
+            [FilenameProperty]
+            [JsonProperty(PropertyName = "playImage")]
+            public string PlayImage { get; set; }
+
+            [FilenameProperty]
+            [JsonProperty(PropertyName = "pauseImage")]
+            public string PauseImage { get; set; }
         }
 
         protected PluginSettings Settings
@@ -59,14 +77,15 @@ namespace BarRaider.GPMDP.Actions
 
         #region Private Members
 
-        private bool isPlaying = false;
         private Track track;
         private int progress;
         private string lastAlbumArtUrl = string.Empty;
         private Bitmap albumImage = null;
-        private Image imgPlayPause = Tools.Base64StringToImage(Properties.Settings.Default.ImgPlayPause);
+        private Image imgPlayPauseDefault = Tools.Base64StringToImage(Properties.Settings.Default.ImgPlayPause);
         private string trackTitle = null;
         private StringBuilder trackTitleShifted = null;
+        private Image imgCustomizedPlay = null;
+        private Image imgCustomizedPause = null;
 
         #endregion
 
@@ -84,16 +103,15 @@ namespace BarRaider.GPMDP.Actions
             }
             CheckTokenExists();
 
-            GpmdpClient.Instance.PlayStateReceived += Client_PlayStateReceived;
             GpmdpClient.Instance.TimeReceived += Client_TimeReceived;
             GpmdpClient.Instance.TrackResultReceived += Client_TrackResultReceived;
+            LoadCustomImages();
         }
 
         #region Public Methods
 
         public override void Dispose()
         {
-            GpmdpClient.Instance.PlayStateReceived -= Client_PlayStateReceived;
             GpmdpClient.Instance.TimeReceived -= Client_TimeReceived;
             GpmdpClient.Instance.TrackResultReceived -= Client_TrackResultReceived;
             base.Dispose();
@@ -118,6 +136,8 @@ namespace BarRaider.GPMDP.Actions
         public override void ReceivedSettings(ReceivedSettingsPayload payload) 
         {
             Tools.AutoPopulateSettings(Settings, payload.Settings);
+            LoadCustomImages();
+            SaveSettings();
         }
 
         public override void OnTick()
@@ -167,15 +187,9 @@ namespace BarRaider.GPMDP.Actions
             progress = e.Current;
         }
 
-        private void Client_PlayStateReceived(object sender, bool e)
-        {
-            isPlaying = e;
-        }
-
         private void DrawPlayPauseKey()
         {
-            Graphics graphics;
-            Bitmap bmp = Tools.GenerateKeyImage(out graphics);
+            Bitmap bmp = Tools.GenerateKeyImage(out Graphics graphics);
             GraphicsPath gpath;
             var fontSong = new Font("Verdana", 11, FontStyle.Bold);
             var fontElapsed = new Font("Verdana", 11, FontStyle.Bold);
@@ -185,18 +199,17 @@ namespace BarRaider.GPMDP.Actions
             {
                 graphics.DrawImage(albumImage, 0, 0, Tools.KEY_DEFAULT_WIDTH, Tools.KEY_DEFAULT_HEIGHT);
             }
-            /*
-            else if (keyBase64ImageStr != null)
+            else if (imgCustomizedPlay != null && gpmdpManager.IsPlaying)
             {
-                if (imgKeyImage == null)
-                {
-                    imgKeyImage = Tools.Base64StringToImage(keyBase64ImageStr);
-                }
-                graphics.DrawImage(imgKeyImage, 0, 0, Tools.KEY_DEFAULT_WIDTH, Tools.KEY_DEFAULT_HEIGHT);
-            }*/
+                graphics.DrawImage(imgCustomizedPlay, 0, 0, Tools.KEY_DEFAULT_WIDTH, Tools.KEY_DEFAULT_HEIGHT);
+            }
+            else if (imgCustomizedPause != null && !gpmdpManager.IsPlaying)
+            {
+                graphics.DrawImage(imgCustomizedPause, 0, 0, Tools.KEY_DEFAULT_WIDTH, Tools.KEY_DEFAULT_HEIGHT);
+            }
             else // Default image
             {
-                graphics.DrawImage(imgPlayPause, 0, 0, Tools.KEY_DEFAULT_WIDTH, Tools.KEY_DEFAULT_HEIGHT);
+                graphics.DrawImage(imgPlayPauseDefault, 0, 0, Tools.KEY_DEFAULT_WIDTH, Tools.KEY_DEFAULT_HEIGHT);
             }
 
             if (Settings.ShowTimeElapsed)
@@ -249,6 +262,19 @@ namespace BarRaider.GPMDP.Actions
             return new Bitmap(stream);
         }
 
+        private void LoadCustomImages()
+        {
+            // Play key
+            if (!String.IsNullOrEmpty(Settings.PlayImage))
+            {
+                imgCustomizedPlay = Tools.Base64StringToImage(Tools.FileToBase64(Settings.PlayImage, true));
+            }
+
+            if (!string.IsNullOrEmpty(Settings.PauseImage))
+            {
+                imgCustomizedPause = Tools.Base64StringToImage(Tools.FileToBase64(Settings.PauseImage, true));
+            }
+        }
 
         #endregion
 

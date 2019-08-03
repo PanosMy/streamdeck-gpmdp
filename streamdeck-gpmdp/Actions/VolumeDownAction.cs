@@ -10,7 +10,7 @@ namespace BarRaider.GPMDP.Actions
         {
         }
 
-        public async override void KeyPressed(KeyPayload payload)
+        public override void KeyPressed(KeyPayload payload)
         {
             baseHandledKeypress = false;
             base.KeyPressed(payload);

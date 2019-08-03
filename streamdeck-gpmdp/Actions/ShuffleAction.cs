@@ -1,6 +1,7 @@
 ﻿using BarRaider.GPMDP.Communication;
 using BarRaider.SdTools;
 using GPMDP_Api.Enums;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -17,10 +18,22 @@ namespace BarRaider.GPMDP.Actions
         {
             public static PluginSettings CreateDefaultSettings()
             {
-                PluginSettings instance = new PluginSettings();
-                instance.TokenExists = false;
+                PluginSettings instance = new PluginSettings
+                {
+                    TokenExists = false,
+                    ShuffleOffImage = String.Empty,
+                    ShuffleOnImage = String.Empty
+                };
                 return instance;
             }
+
+            [FilenameProperty]
+            [JsonProperty(PropertyName = "shuffleOffImage")]
+            public string ShuffleOffImage { get; set; }
+
+            [FilenameProperty]
+            [JsonProperty(PropertyName = "shuffleOnImage")]
+            public string ShuffleOnImage { get; set; }
         }
 
         protected PluginSettings Settings
@@ -43,6 +56,8 @@ namespace BarRaider.GPMDP.Actions
         #region Private Members
 
         ShuffleType shuffle;
+        private string shuffleOnBase64ImageStr = null;
+        private string shuffleOffBase64ImageStr = null;
 
         #endregion
 
@@ -65,6 +80,7 @@ namespace BarRaider.GPMDP.Actions
                 shuffle = gpmdpManager.GetShuffle();
             }
             GpmdpClient.Instance.ShuffleReceived += Client_ShuffleReceived;
+            LoadCustomImages();
         }
 
         #region Public Methods
@@ -82,12 +98,28 @@ namespace BarRaider.GPMDP.Actions
 
             if (!baseHandledKeypress)
             {
-                gpmdpManager.ShuffleToggle();
+                
+
+                if (!payload.IsInMultiAction)
+                {
+                    gpmdpManager.ShuffleToggle();
+                }
+                else if (payload.UserDesiredState == 1) // Multiaction mode, check if desired state is 1 (0==shuffle, 1==no shuffle) 
+                {
+                    gpmdpManager.SetShuffle(ShuffleType.None);
+                }
+                else // UserDesiredState == 0
+                {
+                    gpmdpManager.SetShuffle(ShuffleType.All);
+                }
+
             }
         }
         public override void ReceivedSettings(ReceivedSettingsPayload payload)
         {
             Tools.AutoPopulateSettings(Settings, payload.Settings);
+            LoadCustomImages();
+            SaveSettings();
         }
 
         public async override void OnTick()
@@ -99,11 +131,25 @@ namespace BarRaider.GPMDP.Actions
             {
                 if (shuffle == ShuffleType.All)
                 {
-                    await Connection.SetImageAsync(Properties.Settings.Default.ImgShuffleOn);
+                    if (!String.IsNullOrEmpty(shuffleOnBase64ImageStr))
+                    {
+                        await Connection.SetImageAsync(shuffleOnBase64ImageStr);
+                    }
+                    else
+                    {
+                        await Connection.SetImageAsync(Properties.Settings.Default.ImgShuffleOn);
+                    }
                 }
                 else
                 {
-                    await Connection.SetImageAsync(Properties.Settings.Default.ImgShuffleOff);
+                    if (!String.IsNullOrEmpty(shuffleOffBase64ImageStr))
+                    {
+                        await Connection.SetImageAsync(shuffleOffBase64ImageStr);
+                    }
+                    else
+                    {
+                        await Connection.SetImageAsync(Properties.Settings.Default.ImgShuffleOff);
+                    }
                 }
             }
         }
@@ -124,6 +170,12 @@ namespace BarRaider.GPMDP.Actions
         private void Client_ShuffleReceived(object sender, GPMDP_Api.Enums.ShuffleType e)
         {
             shuffle = e;
+        }
+
+        private void LoadCustomImages()
+        {
+            shuffleOnBase64ImageStr = Tools.FileToBase64(Settings.ShuffleOnImage, true);
+            shuffleOffBase64ImageStr = Tools.FileToBase64(Settings.ShuffleOffImage, true);
         }
 
         #endregion

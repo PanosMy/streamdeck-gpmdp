@@ -94,6 +94,11 @@ namespace BarRaider.GPMDP.Communication
             GpmdpClient.Instance.GetClient().ToggleShuffle();
         }
 
+        public void SetShuffle(ShuffleType type)
+        {
+            GpmdpClient.Instance.GetClient().SetShuffle(type);
+        }
+
         public RepeatType GetRepeat()
         {
             try

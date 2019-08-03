@@ -19,7 +19,6 @@ namespace BarRaider.GPMDP.Communication
 
         private bool getPlaybackInfo = false;
         private PlaybackInfo lastPlaybackInfo;
-        private DateTime lastSongFetch;
         private object backgroundWorkerLock = new object();
 
         #endregion
@@ -87,6 +86,7 @@ namespace BarRaider.GPMDP.Communication
         private void StartBackgroundWorker()
         {
             return;
+            /*
             lock (backgroundWorkerLock)
             {
                 getPlaybackInfo = true;
@@ -95,6 +95,7 @@ namespace BarRaider.GPMDP.Communication
                     Task.Run(() => PlaybackInfoBackgroundWorker());
                 }
             }
+            */
         }
 
         private void PlaybackInfoBackgroundWorker()

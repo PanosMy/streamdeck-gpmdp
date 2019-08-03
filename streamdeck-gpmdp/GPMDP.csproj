@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4AB2A090-EC42-47F6-A6B8-8B88D6BD4C42}</ProjectGuid>
+    <ProjectGuid>{E4F3BFA7-77BF-4848-8004-DAD4754C398F}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>BarRaider.GPMDP</RootNamespace>
     <AssemblyName>com.barraider.gpmdp</AssemblyName>
@@ -319,6 +319,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="PropertyInspector\GPMDP\Mute.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PropertyInspector\GPMDP\Repeat.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PropertyInspector\GPMDP\Shuffle.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="PropertyInspector\GPMDP\Volume.html">

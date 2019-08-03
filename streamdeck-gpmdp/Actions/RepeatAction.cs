@@ -1,6 +1,7 @@
 ﻿using BarRaider.GPMDP.Communication;
 using BarRaider.SdTools;
 using GPMDP_Api.Enums;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -17,10 +18,28 @@ namespace BarRaider.GPMDP.Actions
         {
             public static PluginSettings CreateDefaultSettings()
             {
-                PluginSettings instance = new PluginSettings();
-                instance.TokenExists = false;
+                PluginSettings instance = new PluginSettings
+                {
+                    TokenExists = false,
+                    RepeatAllImage = String.Empty,
+                    RepeatTrackImage = String.Empty,
+                    RepeatOffImage = String.Empty
+                };
                 return instance;
             }
+
+
+            [FilenameProperty]
+            [JsonProperty(PropertyName = "repeatAllImage")]
+            public string RepeatAllImage { get; set; }
+
+            [FilenameProperty]
+            [JsonProperty(PropertyName = "repeatTrackImage")]
+            public string RepeatTrackImage { get; set; }
+
+            [FilenameProperty]
+            [JsonProperty(PropertyName = "repeatOffImage")]
+            public string RepeatOffImage { get; set; }
         }
 
         protected PluginSettings Settings
@@ -43,6 +62,9 @@ namespace BarRaider.GPMDP.Actions
         #region Private Members
 
         RepeatType repeat;
+        private string repeatAllBase64ImageStr = null;
+        private string repeatTrackBase64ImageStr = null;
+        private string repeatOffBase64ImageStr = null;
 
         #endregion
 
@@ -65,6 +87,7 @@ namespace BarRaider.GPMDP.Actions
                 repeat = gpmdpManager.GetRepeat();
             }
             GpmdpClient.Instance.RepeatReceived += Instance_RepeatReceived;
+            LoadCustomImages();
         }
 
         #region Public Methods
@@ -87,6 +110,8 @@ namespace BarRaider.GPMDP.Actions
         public override void ReceivedSettings(ReceivedSettingsPayload payload)
         {
             Tools.AutoPopulateSettings(Settings, payload.Settings);
+            LoadCustomImages();
+            SaveSettings();
         }
 
         public async override void OnTick()
@@ -100,36 +125,64 @@ namespace BarRaider.GPMDP.Actions
                 {
                     case (RepeatType.None):
                     case (RepeatType.Unknown):
-                        await Connection.SetImageAsync(Properties.Settings.Default.ImgRepeatOff);
+                        if (!String.IsNullOrEmpty(repeatOffBase64ImageStr))
+                        {
+                            await Connection.SetImageAsync(repeatOffBase64ImageStr);
+                        }
+                        else
+                        {
+                            await Connection.SetImageAsync(Properties.Settings.Default.ImgRepeatOff);
+                        }
                         break;
                     case (RepeatType.Single):
-                        await Connection.SetImageAsync(Properties.Settings.Default.ImgRepeatTrack);
+                        if (!String.IsNullOrEmpty(repeatTrackBase64ImageStr))
+                        {
+                            await Connection.SetImageAsync(repeatTrackBase64ImageStr);
+                        }
+                        else
+                        {
+                            await Connection.SetImageAsync(Properties.Settings.Default.ImgRepeatTrack);
+                        }
                         break;
                     case (RepeatType.List):
-                        await Connection.SetImageAsync(Properties.Settings.Default.ImgRepeatOn);
+                        if (!String.IsNullOrEmpty(repeatAllBase64ImageStr))
+                        {
+                            await Connection.SetImageAsync(repeatAllBase64ImageStr);
+                        }
+                        else
+                        {
+                            await Connection.SetImageAsync(Properties.Settings.Default.ImgRepeatOn);
+                        }
                         break;
                 }
             }
         }
 
-    public override void KeyReleased(KeyPayload payload) { }
+        public override void KeyReleased(KeyPayload payload) { }
 
-    public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload) { }
+        public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload) { }
 
-    public override Task SaveSettings()
-    {
-        return Connection.SetSettingsAsync(JObject.FromObject(Settings));
+        public override Task SaveSettings()
+        {
+            return Connection.SetSettingsAsync(JObject.FromObject(Settings));
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void Instance_RepeatReceived(object sender, RepeatType e)
+        {
+            repeat = e;
+        }
+
+        private void LoadCustomImages()
+        {
+            repeatAllBase64ImageStr = Tools.FileToBase64(Settings.RepeatAllImage, true);
+            repeatTrackBase64ImageStr = Tools.FileToBase64(Settings.RepeatTrackImage, true);
+            repeatOffBase64ImageStr = Tools.FileToBase64(Settings.RepeatOffImage, true);
+        }
+
+        #endregion
     }
-
-    #endregion
-
-    #region Private Methods
-
-    private void Instance_RepeatReceived(object sender, RepeatType e)
-    {
-        repeat = e;
-    }
-
-    #endregion
-}
 }
