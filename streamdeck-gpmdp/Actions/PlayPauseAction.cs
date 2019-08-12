@@ -81,7 +81,7 @@ namespace BarRaider.GPMDP.Actions
         private int progress;
         private string lastAlbumArtUrl = string.Empty;
         private Bitmap albumImage = null;
-        private Image imgPlayPauseDefault = Tools.Base64StringToImage(Properties.Settings.Default.ImgPlayPause);
+        private readonly Image imgPlayPauseDefault = Tools.Base64StringToImage(Properties.Settings.Default.ImgPlayPause);
         private string trackTitle = null;
         private StringBuilder trackTitleShifted = null;
         private Image imgCustomizedPlay = null;
@@ -189,7 +189,10 @@ namespace BarRaider.GPMDP.Actions
 
         private void DrawPlayPauseKey()
         {
-            Bitmap bmp = Tools.GenerateKeyImage(out Graphics graphics);
+            Bitmap img = Tools.GenerateGenericKeyImage(out Graphics graphics);
+            int height = img.Height;
+            int width = img.Width;
+
             GraphicsPath gpath;
             var fontSong = new Font("Verdana", 11, FontStyle.Bold);
             var fontElapsed = new Font("Verdana", 11, FontStyle.Bold);
@@ -197,19 +200,19 @@ namespace BarRaider.GPMDP.Actions
             // Draw back cover
             if (Settings.ShowSongImage && track != null && albumImage != null)
             {
-                graphics.DrawImage(albumImage, 0, 0, Tools.KEY_DEFAULT_WIDTH, Tools.KEY_DEFAULT_HEIGHT);
+                graphics.DrawImage(albumImage, 0, 0, width, height);
             }
             else if (imgCustomizedPlay != null && gpmdpManager.IsPlaying)
             {
-                graphics.DrawImage(imgCustomizedPlay, 0, 0, Tools.KEY_DEFAULT_WIDTH, Tools.KEY_DEFAULT_HEIGHT);
+                graphics.DrawImage(imgCustomizedPlay, 0, 0, width, height);
             }
             else if (imgCustomizedPause != null && !gpmdpManager.IsPlaying)
             {
-                graphics.DrawImage(imgCustomizedPause, 0, 0, Tools.KEY_DEFAULT_WIDTH, Tools.KEY_DEFAULT_HEIGHT);
+                graphics.DrawImage(imgCustomizedPause, 0, 0, width, height);
             }
             else // Default image
             {
-                graphics.DrawImage(imgPlayPauseDefault, 0, 0, Tools.KEY_DEFAULT_WIDTH, Tools.KEY_DEFAULT_HEIGHT);
+                graphics.DrawImage(imgPlayPauseDefault, 0, 0, width, height);
             }
 
             if (Settings.ShowTimeElapsed)
@@ -224,7 +227,7 @@ namespace BarRaider.GPMDP.Actions
                 gpath.AddString(timeElapsed,
                                     fontElapsed.FontFamily,
                                     (int)FontStyle.Bold,
-                                    graphics.DpiY * fontElapsed.SizeInPoints / 72,
+                                    graphics.DpiY * fontElapsed.SizeInPoints / width,
                                     new Point(9, 54),
                                     new StringFormat());
                 graphics.DrawPath(Pens.Black, gpath);
@@ -241,13 +244,13 @@ namespace BarRaider.GPMDP.Actions
                 gpath.AddString(songName,
                                 fontSong.FontFamily,
                                 (int)FontStyle.Bold,
-                                graphics.DpiY * fontSong.SizeInPoints / 72,
+                                graphics.DpiY * fontSong.SizeInPoints / width,
                                 new Point(3, 1),
                                 new StringFormat());
                 graphics.DrawPath(Pens.Black, gpath);
                 graphics.FillPath(Brushes.White, gpath);
             }
-            Connection.SetImageAsync(bmp);
+            Connection.SetImageAsync(img);
         }
 
         private async Task<Bitmap> FetchImage(string imageUrl)

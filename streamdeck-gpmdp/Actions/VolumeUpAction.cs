@@ -10,15 +10,14 @@ namespace BarRaider.GPMDP.Actions
         {
         }
 
-        public async override void KeyPressed(KeyPayload payload)
+        public override void KeyPressed(KeyPayload payload)
         {
             baseHandledKeypress = false;
             base.KeyPressed(payload);
 
             if (!baseHandledKeypress)
             {
-                int volume;
-                if (int.TryParse(Settings.VolumeParam, out volume))
+                if (int.TryParse(Settings.VolumeParam, out int volume))
                 {
                     // Spotify gets fussy if the values are out of range
                     int totalVolume = currentVolume + volume;
