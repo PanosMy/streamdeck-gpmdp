@@ -194,8 +194,8 @@ namespace BarRaider.GPMDP.Actions
             int width = img.Width;
 
             GraphicsPath gpath;
-            var fontSong = new Font("Verdana", 11, FontStyle.Bold);
-            var fontElapsed = new Font("Verdana", 11, FontStyle.Bold);
+            var fontSong = new Font("Verdana", 40, FontStyle.Bold);
+            var fontElapsed = new Font("Verdana", 40, FontStyle.Bold);
 
             // Draw back cover
             if (Settings.ShowSongImage && track != null && albumImage != null)
@@ -223,12 +223,18 @@ namespace BarRaider.GPMDP.Actions
                 string timeElapsed = string.Format("{0:D2}:{1:D2}",
                                         (int)t.TotalMinutes,
                                         t.Seconds);
+                SizeF stringSize = graphics.MeasureString(timeElapsed, fontElapsed);
+                int stringPos = 22;
+                if (stringSize.Width < width)
+                {
+                    stringPos = (int)Math.Abs((width - stringSize.Width)) / 2;
+                }
                 gpath = new GraphicsPath();
                 gpath.AddString(timeElapsed,
                                     fontElapsed.FontFamily,
                                     (int)FontStyle.Bold,
                                     graphics.DpiY * fontElapsed.SizeInPoints / width,
-                                    new Point(9, 54),
+                                    new Point(stringPos, 108),
                                     new StringFormat());
                 graphics.DrawPath(Pens.Black, gpath);
                 graphics.FillPath(Brushes.White, gpath);
@@ -267,15 +273,26 @@ namespace BarRaider.GPMDP.Actions
 
         private void LoadCustomImages()
         {
+            imgCustomizedPlay = null;
+            imgCustomizedPause = null;
+
             // Play key
             if (!String.IsNullOrEmpty(Settings.PlayImage))
             {
-                imgCustomizedPlay = Tools.Base64StringToImage(Tools.FileToBase64(Settings.PlayImage, true));
+                string strPlay = Tools.FileToBase64(Settings.PlayImage, true);
+                if (!String.IsNullOrEmpty(strPlay))
+                {
+                    imgCustomizedPlay = Tools.Base64StringToImage(strPlay);
+                }
             }
 
             if (!string.IsNullOrEmpty(Settings.PauseImage))
             {
-                imgCustomizedPause = Tools.Base64StringToImage(Tools.FileToBase64(Settings.PauseImage, true));
+                string strPause = Tools.FileToBase64(Settings.PauseImage, true);
+                if (!String.IsNullOrEmpty(strPause))
+                {
+                    imgCustomizedPause = Tools.Base64StringToImage(strPause);
+                }
             }
         }
 

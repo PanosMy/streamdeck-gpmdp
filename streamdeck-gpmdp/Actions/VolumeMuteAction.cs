@@ -16,18 +16,24 @@ namespace BarRaider.GPMDP.Actions
 
             if (!baseHandledKeypress)
             {
-                // Toggle
-                if (currentVolume == 0)
+                if (!gpmdpManager.IsConnected)
                 {
-                    int volumeToggle;
-                    if (int.TryParse(Settings.VolumeParam, out volumeToggle))
+                    await Connection.ShowAlert();
+                    return;
+                }
+
+                // Toggle
+                int volume = gpmdpManager.GetVolume();              
+                if (volume == 0)
+                {
+                    if (int.TryParse(Settings.VolumeParam, out int volumeToggle))
                     {
                         gpmdpManager.SetVolume(volumeToggle);
                     }
                 }
                 else
                 {
-                    Settings.VolumeParam = currentVolume.ToString();
+                    Settings.VolumeParam = volume.ToString();
                     gpmdpManager.SetVolume(0);
                     await SaveSettings();
                 }
@@ -41,7 +47,13 @@ namespace BarRaider.GPMDP.Actions
 
             if (!baseHandledOnTick)
             {
-                if (currentVolume == 0)
+                if (!gpmdpManager.IsConnected)
+                {
+                    return;
+                }
+
+                int volume = gpmdpManager.GetVolume();
+                if (volume == 0)
                 {
                     await Connection.SetImageAsync(Properties.Settings.Default.ImgVolumeSet);
                 }
@@ -52,7 +64,7 @@ namespace BarRaider.GPMDP.Actions
 
                 if (Settings.ShowVolumeLevel)
                 {
-                    await Connection.SetTitleAsync(currentVolume.ToString());
+                    await Connection.SetTitleAsync(volume.ToString());
                 }
                 else
                 {

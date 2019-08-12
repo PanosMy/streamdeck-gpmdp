@@ -79,6 +79,7 @@
     <Compile Include="Actions\VolumeSetAction.cs" />
     <Compile Include="Actions\VolumeUpAction.cs" />
     <Compile Include="Communication\CurrentlyPlayingManager.cs" />
+    <Compile Include="Communication\GlobalSettings.cs" />
     <Compile Include="Communication\GpmdpClient.cs" />
     <Compile Include="Communication\GpmdpManager.cs" />
     <Compile Include="Communication\GpmdpSecret.cs" />

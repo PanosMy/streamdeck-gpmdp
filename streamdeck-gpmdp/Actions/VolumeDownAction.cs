@@ -10,18 +10,23 @@ namespace BarRaider.GPMDP.Actions
         {
         }
 
-        public override void KeyPressed(KeyPayload payload)
+        public async override void KeyPressed(KeyPayload payload)
         {
             baseHandledKeypress = false;
             base.KeyPressed(payload);
 
             if (!baseHandledKeypress)
             {
-                int volume;
-                if (int.TryParse(Settings.VolumeParam, out volume))
+                if (!gpmdpManager.IsConnected)
+                {
+                    await Connection.ShowAlert();
+                    return;
+                }
+
+                if (int.TryParse(Settings.VolumeParam, out int volume))
                 {
                     // Spotify gets fussy if the values are out of range
-                    int totalVolume = currentVolume - volume;
+                    int totalVolume = gpmdpManager.GetVolume() - volume;
                     if (totalVolume < 0)
                     {
                         totalVolume = 0;
@@ -40,9 +45,9 @@ namespace BarRaider.GPMDP.Actions
             {
                 await Connection.SetImageAsync((String)null);
 
-                if (Settings.ShowVolumeLevel)
+                if (Settings.ShowVolumeLevel && gpmdpManager.IsConnected)
                 {
-                    await Connection.SetTitleAsync(currentVolume.ToString());
+                    await Connection.SetTitleAsync(gpmdpManager.GetVolume().ToString());
                 }
                 else
                 {

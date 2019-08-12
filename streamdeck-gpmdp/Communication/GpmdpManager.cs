@@ -117,9 +117,9 @@ namespace BarRaider.GPMDP.Communication
             GpmdpClient.Instance.GetClient().ToggleRepeat();
         }
 
-        public void GetVolume()
+        public int GetVolume()
         {
-            GpmdpClient.Instance.GetClient().GetVolume();
+            return GpmdpClient.Instance.GetClient().GetVolume();
         }
 
         public void SetVolume(int volume)

@@ -19,7 +19,7 @@ namespace BarRaider.GPMDP.Communication
 
         private bool getPlaybackInfo = false;
         private PlaybackInfo lastPlaybackInfo;
-        private object backgroundWorkerLock = new object();
+        private readonly object backgroundWorkerLock = new object();
 
         #endregion
 

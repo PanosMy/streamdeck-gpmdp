@@ -1,5 +1,6 @@
 ﻿using BarRaider.SdTools;
 using GPMDP_Api;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,13 +14,11 @@ namespace BarRaider.GPMDP.Communication
     internal class TokenManager
     {
         #region Private Members
-        private const string TOKEN_FILE = "gpmdp.dat";
-
         private static TokenManager instance = null;
         private static readonly object objLock = new object();
 
         private GpmdpToken token;
-        private object refreshTokensLock = new object();
+        private GlobalSettings global;
 
         #endregion
 
@@ -52,12 +51,9 @@ namespace BarRaider.GPMDP.Communication
 
         private TokenManager()
         {
-            LoadToken();
-            if (token != null && !string.IsNullOrWhiteSpace(token.AccessToken))
-            {
-                GpmdpClient.Instance.Connect();
-                Authenticate();
-            }
+            GlobalSettingsManager.Instance.OnReceivedGlobalSettings += Instance_OnReceivedGlobalSettings;
+            GlobalSettingsManager.Instance.RequestGlobalSettings();
+            
         }
 
         #endregion
@@ -103,6 +99,10 @@ namespace BarRaider.GPMDP.Communication
                 }
                 token = new GpmdpToken() { AccessToken = accessToken, TokenLastRefresh = tokenCreateDate };
                 SaveToken();
+            }
+            if (token != null && !string.IsNullOrWhiteSpace(token.AccessToken))
+            {
+                GpmdpClient.Instance.Connect();
                 Authenticate();
             }
             TokensChanged?.Invoke(this, new GpmdpTokenEventArgs(TokenExists));
@@ -112,29 +112,23 @@ namespace BarRaider.GPMDP.Communication
 
         #region Private Methods
 
-        private void LoadToken()
+        private void LoadToken(GpmdpToken globalToken)
         {
             try
             {
-                string fileName = Path.Combine(System.AppContext.BaseDirectory, TOKEN_FILE);
-                if (File.Exists(fileName))
+                if (globalToken == null)
                 {
-                    using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
-                    {
-                        var formatter = new BinaryFormatter();
-                        token = (GpmdpToken)formatter.Deserialize(stream);
-                        if (token == null)
-                        {
-                            Logger.Instance.LogMessage(TracingLevel.ERROR, "Failed to load tokens, deserialized token is null");
-                            return;
-                        }
-                        Logger.Instance.LogMessage(TracingLevel.INFO, $"Token initialized. Last refresh date was: {token.TokenLastRefresh}");
-                    }
+                    Logger.Instance.LogMessage(TracingLevel.ERROR, "Failed to load tokens, deserialized globalToken is null");
+                    return;
                 }
-                else
+                token = new GpmdpToken()
                 {
-                    Logger.Instance.LogMessage(TracingLevel.WARN, $"Failed to load tokens, token file does not exist: {fileName}");
-                }
+                    AccessToken = globalToken.AccessToken,
+                    TokenLastRefresh = globalToken.TokenLastRefresh
+                };
+
+                Logger.Instance.LogMessage(TracingLevel.INFO, $"Token initialized. Last refresh date was: {token.TokenLastRefresh}");
+                InitTokens(token.AccessToken, token.TokenLastRefresh);
             }
             catch (Exception ex)
             {
@@ -146,18 +140,47 @@ namespace BarRaider.GPMDP.Communication
         {
             try
             {
-                var formatter = new BinaryFormatter();
-                using (var stream = new FileStream(Path.Combine(System.AppContext.BaseDirectory, TOKEN_FILE), FileMode.Create, FileAccess.Write))
+                if (global == null)
                 {
-
-                    formatter.Serialize(stream, token);
-                    stream.Close();
-                    Logger.Instance.LogMessage(TracingLevel.INFO, $"New token saved. Last refresh date was: {token.TokenLastRefresh}");
+                    Logger.Instance.LogMessage(TracingLevel.ERROR, "Failed to save token, Global Settings is null");
+                    return;
                 }
+
+                // Set token in Global Settings
+                if (token == null)
+                {
+                    Logger.Instance.LogMessage(TracingLevel.WARN, "Saving null token to Global Settings");
+                    global.Token = null;
+                }
+                else
+                {
+                    global.Token = new GpmdpToken()
+                    {
+                        AccessToken = token.AccessToken,
+                        TokenLastRefresh = token.TokenLastRefresh
+                    };
+                }
+
+                GlobalSettingsManager.Instance.SetGlobalSettings(JObject.FromObject(global));
+                Logger.Instance.LogMessage(TracingLevel.INFO, $"New token saved. Last refresh date was: {token.TokenLastRefresh}");
             }
             catch (Exception ex)
             {
                 Logger.Instance.LogMessage(TracingLevel.ERROR, $"Exception saving tokens: {ex}");
+            }
+        }
+
+        private void Instance_OnReceivedGlobalSettings(object sender, ReceivedGlobalSettingsPayload payload)
+        {
+            if (payload?.Settings != null && payload.Settings.Count > 0)
+            {
+                global = payload.Settings.ToObject<GlobalSettings>();
+                LoadToken(global.Token);
+            }
+            else // First time
+            {
+                global = new GlobalSettings();
+                GlobalSettingsManager.Instance.SetGlobalSettings(JObject.FromObject(global));
             }
         }
 

@@ -6,14 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace BarRaider.GPMDP.Communication
-{
-    [Serializable]
-    class GpmdpToken
+{    class GpmdpToken
     {
-        [JsonProperty(PropertyName = "access_token")]
+        [JsonProperty(PropertyName = "accessToken")]
         public string AccessToken { get; set; }
 
-        [JsonIgnore]
+        [JsonProperty(PropertyName = "lastRefresh")]
         public DateTime TokenLastRefresh { get; set; }
     }
 }

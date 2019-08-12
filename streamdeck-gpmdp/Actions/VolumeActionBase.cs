@@ -12,10 +12,12 @@ namespace BarRaider.GPMDP.Actions
         {
             public static PluginSettings CreateDefaultSettings()
             {
-                PluginSettings instance = new PluginSettings();
-                instance.VolumeParam = "10";
-                instance.TokenExists = false;
-                instance.ShowVolumeLevel = true;
+                PluginSettings instance = new PluginSettings
+                {
+                    VolumeParam = "10",
+                    TokenExists = false,
+                    ShowVolumeLevel = true
+                };
                 return instance;
             }
 
@@ -45,7 +47,7 @@ namespace BarRaider.GPMDP.Actions
 
         #region Protected Members
 
-        protected int currentVolume;
+        //protected int currentVolume;
 
         #endregion
 
@@ -69,14 +71,14 @@ namespace BarRaider.GPMDP.Actions
             }
             CheckTokenExists();
 
-            GpmdpClient.Instance.VolumeReceived += Instance_VolumeReceived;
+            //GpmdpClient.Instance.VolumeReceived += Instance_VolumeReceived;
         }
 
         #region Public Methods
 
         public override void Dispose()
         {
-            GpmdpClient.Instance.VolumeReceived -= Instance_VolumeReceived;
+            //GpmdpClient.Instance.VolumeReceived -= Instance_VolumeReceived;
             base.Dispose();
         }
 
@@ -98,12 +100,12 @@ namespace BarRaider.GPMDP.Actions
         #endregion
 
         #region Private Methods
-
+        /*
         private void Instance_VolumeReceived(object sender, int e)
         {
             currentVolume = e;
         }
-
+        */
         #endregion 
     }
 }

@@ -12,7 +12,7 @@ namespace BarRaider.GPMDP.Communication
         private static GpmdpClient instance = null;
         private static readonly object objLock = new object();
 
-        private Client client;
+        private readonly Client client;
 
         #region Constructors
 

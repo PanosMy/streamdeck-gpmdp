@@ -17,8 +17,7 @@ namespace BarRaider.GPMDP.Actions
 
             if (!baseHandledKeypress)
             {
-                int volume;
-                if (int.TryParse(Settings.VolumeParam, out volume))
+                if (int.TryParse(Settings.VolumeParam, out int volume))
                 {
                     gpmdpManager.SetVolume(volume);
                 }
@@ -34,9 +33,9 @@ namespace BarRaider.GPMDP.Actions
             {
                 await Connection.SetImageAsync((String)null);
 
-                if (Settings.ShowVolumeLevel)
+                if (gpmdpManager.IsConnected && Settings.ShowVolumeLevel)
                 {
-                    await Connection.SetTitleAsync(currentVolume.ToString());
+                    await Connection.SetTitleAsync(gpmdpManager.GetVolume().ToString());
                 }
                 else
                 {

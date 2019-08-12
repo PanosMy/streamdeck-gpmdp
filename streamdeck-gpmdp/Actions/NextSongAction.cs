@@ -15,8 +15,10 @@ namespace BarRaider.GPMDP.Actions
         {
             public static PluginSettings CreateDefaultSettings()
             {
-                PluginSettings instance = new PluginSettings();
-                instance.TokenExists = false;
+                PluginSettings instance = new PluginSettings
+                {
+                    TokenExists = false
+                };
                 return instance;
             }
         }
