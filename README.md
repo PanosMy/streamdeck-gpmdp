@@ -4,19 +4,22 @@ Integration and live feedback with the Google Play Media Desktop Player (GPMDP).
 
 **Author's website and contact information:** [https://barraider.github.io](https://barraider.github.io)
 
-## New in v1.2
+## New in v1.5
+- Improved API stability and token fetching
 - Customizable images for shuffle, repeat and play-pause actions
 - Shuffle support in Multi Action
 
 ## Actions supported:
-- Custom images that toggle for shuffle * Play/Pause (includes support to show current playing time, Album Art and Song Title)
-- Custom images that toggle for repeat buttons
+* Play/Pause (includes support to show current playing time, Album Art and Song Title)
 * Previous
 * Next
 * Volume Up/Volume Down/Volume Set
 * Mute/Unmute Toggle
 * Repeat Mode
 * Shuffle Mode
+- Customizable images for shuffle, repeat and play-pause actions
+- Shuffle support in Multi Action
+
 
 ### Download
 
