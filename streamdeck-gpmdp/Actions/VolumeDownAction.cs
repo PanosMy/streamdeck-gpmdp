@@ -17,7 +17,7 @@ namespace BarRaider.GPMDP.Actions
 
             if (!baseHandledKeypress)
             {
-                if (!gpmdpManager.IsConnected)
+                if (!gpmdpManager.IsReadyForCommand)
                 {
                     await Connection.ShowAlert();
                     return;
@@ -45,7 +45,7 @@ namespace BarRaider.GPMDP.Actions
             {
                 await Connection.SetImageAsync((String)null);
 
-                if (Settings.ShowVolumeLevel && gpmdpManager.IsConnected)
+                if (Settings.ShowVolumeLevel && gpmdpManager.IsReadyForCommand)
                 {
                     await Connection.SetTitleAsync(gpmdpManager.GetVolume().ToString());
                 }

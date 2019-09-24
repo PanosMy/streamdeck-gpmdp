@@ -3,6 +3,7 @@ using System;
 using GPMDP_Api.Playback;
 using GPMDP_Api.Volume;
 using GPMDP_Api.Enums;
+using System.Threading.Tasks;
 
 namespace BarRaider.GPMDP.Communication
 {
@@ -20,11 +21,19 @@ namespace BarRaider.GPMDP.Communication
             }
         }
 
-        public bool IsConnected
+        public bool IsClientConnected
         {
             get
             {
-                return GpmdpClient.Instance.IsConnected;
+                return GpmdpClient.Instance.IsClientConnected;
+            }
+        }
+
+        public bool IsReadyForCommand
+        {
+            get
+            {
+                return TokenExists && GpmdpClient.Instance.IsClientConnected;
             }
         }
 
@@ -76,11 +85,11 @@ namespace BarRaider.GPMDP.Communication
             GpmdpClient.Instance.GetClient().Previous();
         }
 
-        public ShuffleType GetShuffle()
+        public async Task<ShuffleType> GetShuffle()
         {
             try
             {
-                return GpmdpClient.Instance.GetClient().GetShuffle();
+                return await GpmdpClient.Instance.GetClient().GetShuffleAsync();
             }
             catch (Exception ex)
             {
@@ -89,9 +98,9 @@ namespace BarRaider.GPMDP.Communication
             }
         }
 
-        public void ShuffleToggle()
+        public async void ShuffleToggle()
         {
-            GpmdpClient.Instance.GetClient().ToggleShuffle();
+            await GpmdpClient.Instance.GetClient().ToggleShuffleAsync();
         }
 
         public void SetShuffle(ShuffleType type)
@@ -99,11 +108,11 @@ namespace BarRaider.GPMDP.Communication
             GpmdpClient.Instance.GetClient().SetShuffle(type);
         }
 
-        public RepeatType GetRepeat()
+        public async Task<RepeatType> GetRepeat()
         {
             try
             {
-                return GpmdpClient.Instance.GetClient().GetRepeat();
+                return await GpmdpClient.Instance.GetClient().GetRepeatAsync();
             }
             catch (Exception ex)
             {
@@ -112,9 +121,9 @@ namespace BarRaider.GPMDP.Communication
             }
         }
 
-        public void RepeatToggle()
+        public async void RepeatToggle()
         {
-            GpmdpClient.Instance.GetClient().ToggleRepeat();
+            await GpmdpClient.Instance.GetClient().ToggleRepeatAsync();
         }
 
         public int GetVolume()

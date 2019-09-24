@@ -80,7 +80,7 @@ namespace BarRaider.GPMDP.Communication
         #region Public Methods
 
         public bool IsAuthenticated { get; private set; }
-        public bool IsConnected
+        public bool IsClientConnected
         {
             get
             {
@@ -92,7 +92,7 @@ namespace BarRaider.GPMDP.Communication
         {
             get
             {
-                return IsConnected && client.IsPlaying();
+                return IsClientConnected && client.IsPlayingAsync().GetAwaiter().GetResult();
             }
         }
 

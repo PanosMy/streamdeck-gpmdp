@@ -33,7 +33,7 @@ namespace BarRaider.GPMDP.Actions
             {
                 await Connection.SetImageAsync((String)null);
 
-                if (gpmdpManager.IsConnected && Settings.ShowVolumeLevel)
+                if (Settings.ShowVolumeLevel && gpmdpManager.IsReadyForCommand)
                 {
                     await Connection.SetTitleAsync(gpmdpManager.GetVolume().ToString());
                 }

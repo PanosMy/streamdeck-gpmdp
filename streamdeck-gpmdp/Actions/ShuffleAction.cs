@@ -75,9 +75,9 @@ namespace BarRaider.GPMDP.Actions
             }
             CheckTokenExists();
 
-            if (gpmdpManager.IsConnected)
+            if (gpmdpManager.IsReadyForCommand)
             {
-                shuffle = gpmdpManager.GetShuffle();
+                shuffle = gpmdpManager.GetShuffle().GetAwaiter().GetResult();
             }
             GpmdpClient.Instance.ShuffleReceived += Client_ShuffleReceived;
             LoadCustomImages();

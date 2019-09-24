@@ -52,7 +52,7 @@ namespace BarRaider.GPMDP.Actions
         public async override void KeyPressed(KeyPayload payload)
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Keypress: {GetType()}");
-            if (!gpmdpManager.TokenExists || !gpmdpManager.IsConnected)
+            if (!gpmdpManager.TokenExists || !gpmdpManager.IsClientConnected)
             {
                 Logger.Instance.LogMessage(TracingLevel.WARN, "Keypress - GPMDP is not connected");
                 baseHandledKeypress = true;

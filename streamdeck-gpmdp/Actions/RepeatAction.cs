@@ -82,9 +82,9 @@ namespace BarRaider.GPMDP.Actions
             }
             CheckTokenExists();
 
-            if (gpmdpManager.IsConnected)
+            if (gpmdpManager.IsReadyForCommand)
             {
-                repeat = gpmdpManager.GetRepeat();
+                repeat = gpmdpManager.GetRepeat().GetAwaiter().GetResult();
             }
             GpmdpClient.Instance.RepeatReceived += Instance_RepeatReceived;
             LoadCustomImages();

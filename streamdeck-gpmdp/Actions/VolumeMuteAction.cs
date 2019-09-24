@@ -16,7 +16,7 @@ namespace BarRaider.GPMDP.Actions
 
             if (!baseHandledKeypress)
             {
-                if (!gpmdpManager.IsConnected)
+                if (!gpmdpManager.IsReadyForCommand)
                 {
                     await Connection.ShowAlert();
                     return;
@@ -47,7 +47,7 @@ namespace BarRaider.GPMDP.Actions
 
             if (!baseHandledOnTick)
             {
-                if (!gpmdpManager.IsConnected)
+                if (!gpmdpManager.IsReadyForCommand)
                 {
                     return;
                 }
