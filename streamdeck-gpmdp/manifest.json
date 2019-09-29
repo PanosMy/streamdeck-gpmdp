@@ -154,7 +154,7 @@
   "Name": "Google Play Music Desktop",
   "Icon": "Images/pluginIcon",
   "URL": "https://BarRaider.com/",
-  "Version": "1.5.3",
+  "Version": "1.5.4",
   "CodePath": "com.barraider.gpmdp",
   "Category": "GPMDP [BarRaider]",
   "CategoryIcon": "Images/categoryIcon",
